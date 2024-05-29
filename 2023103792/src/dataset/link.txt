@@ -1,0 +1,2 @@
+[1] https://www.kaggle.com/datasets/thepbordin/indoor-object-detection
+[2] https://www.kaggle.com/datasets/die9origephit/children-vs-adults-images
