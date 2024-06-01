@@ -1,0 +1,1 @@
+{"test\/":{"txt_r1":0.0,"txt_r5":0.3,"txt_r10":0.9,"txt_r_mean":0.4,"img_r1":0.0,"img_r5":0.4,"img_r10":0.8,"img_r_mean":0.4,"r_mean":0.4},"test_emb\/":{"txt_r1":0.1,"txt_r5":0.2,"txt_r10":0.5,"txt_r_mean":0.27,"img_r1":0.1,"img_r5":0.7,"img_r10":1.2,"img_r_mean":0.67,"r_mean":0.47}}

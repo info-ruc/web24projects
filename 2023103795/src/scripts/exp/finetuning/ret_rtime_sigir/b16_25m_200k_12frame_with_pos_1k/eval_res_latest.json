@@ -1,0 +1,1 @@
+{"test\/":{"txt_r1":86.2,"txt_r5":98.3,"txt_r10":99.2,"txt_r_mean":94.57,"img_r1":86.3,"img_r5":98.3,"img_r10":99.2,"img_r_mean":94.6,"r_mean":94.58,"txt_acc":99.9,"img_acc":99.9},"test_emb\/":{"txt_r1":80.6,"txt_r5":97.4,"txt_r10":98.9,"txt_r_mean":92.3,"img_r1":80.6,"img_r5":97.2,"img_r10":98.5,"img_r_mean":92.1,"r_mean":92.2,"txt_acc":99.8,"img_acc":99.7}}
