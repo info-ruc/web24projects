@@ -1,0 +1,1324 @@
+2024-04-12T00:47:52 | INFO | umt : Logging to: exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/train.log
+2024-04-12T00:47:52 | INFO | utils.config_utils : config: {
+  data_dir: /data2/dy/code/unmasked_teacher/umt_data
+  data_root: /data2/dy/code/unmasked_teacher/umt_data/videos_images
+  anno_root_pt: /data2/dy/code/unmasked_teacher/umt_data/anno_pretrain
+  anno_root_downstream: /data2/dy/code/unmasked_teacher/umt_data/anno_downstream
+  TextEncoders: {
+      bert: {
+          name: bert_base
+          pretrained: bert-base-uncased
+          config: configs/config_bert.json
+          d_model: 768
+          fusion_layer: 9 }
+      bert_large: {
+          name: bert_large
+          pretrained: bert-large-uncased
+          config: configs/config_bert_large.json
+          d_model: 1024
+          fusion_layer: 19 } }
+  train_file: ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/shuffle/train_reverse_rewrite_shuffle.json', '/data2/dy/temporal_video/dataset', 'video']
+  test_file: {
+      test: ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/test2k.json', '/data2/dy/temporal_video/dataset', 'video'] }
+  test_types: ['test']
+  num_workers: 6
+  stop_key: test/
+  is_paragraph_retrieval: False
+  num_frames: 12
+  num_frames_test: 12
+  batch_size: 32
+  max_txt_l: 32
+  evaluate: False
+  train_shuffle: False
+  inputs: {
+      image_res: 224
+      video_input: {
+          num_frames: 12
+          sample_type: rand
+          num_frames_test: 12
+          sample_type_test: middle
+          random_aug: False }
+      max_txt_l: {
+          image: 32
+          video: 32 }
+      batch_size: {
+          image: 32
+          video: 32 }
+      batch_size_test: {
+          image: 32
+          video: 32 } }
+  text_enc: bert
+  model: {
+      model_cls: UMT
+      vision_encoder: {
+          name: vit_b16
+          img_size: 224
+          patch_size: 16
+          d_model: 768
+          encoder_embed_dim: 768
+          encoder_depth: 12
+          encoder_num_heads: 12
+          drop_path_rate: 0.2
+          num_frames: 12
+          tubelet_size: 1
+          use_checkpoint: True
+          checkpoint_num: 12
+          clip_decoder_embed_dim: 768
+          clip_output_dim: 512
+          clip_return_layer: 0
+          clip_student_return_interval: 1
+          pretrained: /datassd2/pretrained_models/Unmasked_Teacher/b16_ptk710_f8_res224.pth
+          clip_teacher: none
+          clip_img_size: 224
+          clip_return_interval: 1
+          video_mask_type: attention
+          video_mask_ratio: 0.0
+          video_double_mask_ratio: 0.0
+          image_mask_type: attention
+          image_mask_ratio: 0.0
+          image_double_mask_ratio: 0.0
+          keep_temporal: True }
+      text_encoder: {
+          name: bert_base
+          pretrained: bert-base-uncased
+          config: configs/config_bert.json
+          d_model: 768
+          fusion_layer: 9 }
+      multimodal: {
+          enable: True }
+      embed_dim: 512
+      temp: 0.07 }
+  criterion: {
+      loss_weight: {
+          vtc: 1.0
+          mlm: 0.0
+          vtm: 1.0
+          uta: 0.0 }
+      vtm_hard_neg: True
+      mlm_masking_prob: 0.5
+      uta_norm_type: l2
+      uta_loss_type: l2 }
+  optimizer: {
+      opt: adamW
+      lr: 1e-05
+      opt_betas: [0.9, 0.999]
+      weight_decay: 0.02
+      max_grad_norm: -1
+      different_lr: {
+          enable: False
+          module_names: []
+          lr: 0.001 } }
+  scheduler: {
+      sched: cosine
+      epochs: 5
+      min_lr_multi: 0.01
+      warmup_epochs: 1 }
+  zero_shot: False
+  deep_fusion: False
+  evaluation: {
+      eval_frame_ensemble: concat
+      eval_x_only: False
+      k_test: 128
+      eval_offload: True }
+  fp16: True
+  gradient_checkpointing: True
+  wandb: {
+      enable: False
+      entity: user
+      project: umt_ret }
+  dist_url: env://
+  device: cuda
+  mode: pt
+  output_dir: exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip
+  resume: False
+  debug: False
+  log_freq: 100
+  seed: 42
+  save_latest: True
+  auto_resume: True
+  pretrained_path: /datassd2/pretrained_models/Unmasked_Teacher/multimodality/b16_25m.pth
+  rank: 0
+  world_size: 4
+  gpu: 0
+  distributed: True
+  dist_backend: nccl }
+2024-04-12T00:47:52 | INFO | __main__ : config: 
+{'data_dir': '/data2/dy/code/unmasked_teacher/umt_data', 'data_root': '/data2/dy/code/unmasked_teacher/umt_data/videos_images', 'anno_root_pt': '/data2/dy/code/unmasked_teacher/umt_data/anno_pretrain', 'anno_root_downstream': '/data2/dy/code/unmasked_teacher/umt_data/anno_downstream', 'TextEncoders': {'bert': {'name': 'bert_base', 'pretrained': 'bert-base-uncased', 'config': 'configs/config_bert.json', 'd_model': 768, 'fusion_layer': 9}, 'bert_large': {'name': 'bert_large', 'pretrained': 'bert-large-uncased', 'config': 'configs/config_bert_large.json', 'd_model': 1024, 'fusion_layer': 19}}, 'train_file': ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/shuffle/train_reverse_rewrite_shuffle.json', '/data2/dy/temporal_video/dataset', 'video'], 'test_file': {'test': ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/test2k.json', '/data2/dy/temporal_video/dataset', 'video']}, 'test_types': ['test'], 'num_workers': 6, 'stop_key': 'test/', 'is_paragraph_retrieval': False, 'num_frames': 12, 'num_frames_test': 12, 'batch_size': 32, 'max_txt_l': 32, 'evaluate': False, 'train_shuffle': False, 'inputs': {'image_res': 224, 'video_input': {'num_frames': 12, 'sample_type': 'rand', 'num_frames_test': 12, 'sample_type_test': 'middle', 'random_aug': False}, 'max_txt_l': {'image': 32, 'video': 32}, 'batch_size': {'image': 32, 'video': 32}, 'batch_size_test': {'image': 32, 'video': 32}}, 'text_enc': 'bert', 'model': {'model_cls': 'UMT', 'vision_encoder': {'name': 'vit_b16', 'img_size': 224, 'patch_size': 16, 'd_model': 768, 'encoder_embed_dim': 768, 'encoder_depth': 12, 'encoder_num_heads': 12, 'drop_path_rate': 0.2, 'num_frames': 12, 'tubelet_size': 1, 'use_checkpoint': True, 'checkpoint_num': 12, 'clip_decoder_embed_dim': 768, 'clip_output_dim': 512, 'clip_return_layer': 0, 'clip_student_return_interval': 1, 'pretrained': '/datassd2/pretrained_models/Unmasked_Teacher/b16_ptk710_f8_res224.pth', 'clip_teacher': 'none', 'clip_img_size': 224, 'clip_return_interval': 1, 'video_mask_type': 'attention', 'video_mask_ratio': 0.0, 'video_double_mask_ratio': 0.0, 'image_mask_type': 'attention', 'image_mask_ratio': 0.0, 'image_double_mask_ratio': 0.0, 'keep_temporal': True}, 'text_encoder': {'name': 'bert_base', 'pretrained': 'bert-base-uncased', 'config': 'configs/config_bert.json', 'd_model': 768, 'fusion_layer': 9}, 'multimodal': {'enable': True}, 'embed_dim': 512, 'temp': 0.07}, 'criterion': {'loss_weight': {'vtc': 1.0, 'mlm': 0.0, 'vtm': 1.0, 'uta': 0.0}, 'vtm_hard_neg': True, 'mlm_masking_prob': 0.5, 'uta_norm_type': 'l2', 'uta_loss_type': 'l2'}, 'optimizer': {'opt': 'adamW', 'lr': 1e-05, 'opt_betas': [0.9, 0.999], 'weight_decay': 0.02, 'max_grad_norm': -1, 'different_lr': {'enable': False, 'module_names': [], 'lr': 0.001}}, 'scheduler': {'sched': 'cosine', 'epochs': 5, 'min_lr_multi': 0.01, 'warmup_epochs': 1}, 'zero_shot': False, 'deep_fusion': False, 'evaluation': {'eval_frame_ensemble': 'concat', 'eval_x_only': False, 'k_test': 128, 'eval_offload': True}, 'fp16': True, 'gradient_checkpointing': True, 'wandb': {'enable': False, 'entity': 'user', 'project': 'umt_ret'}, 'dist_url': 'env://', 'device': 'cuda', 'mode': 'pt', 'output_dir': 'exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip', 'resume': False, 'debug': False, 'log_freq': 100, 'seed': 42, 'save_latest': True, 'auto_resume': True, 'pretrained_path': '/datassd2/pretrained_models/Unmasked_Teacher/multimodality/b16_25m.pth', 'rank': 0, 'world_size': 4, 'gpu': 0, 'distributed': True, 'dist_backend': 'nccl'}
+2024-04-12T00:47:52 | INFO | __main__ : train_file: ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/shuffle/train_reverse_rewrite_shuffle.json', '/data2/dy/temporal_video/dataset', 'video']
+2024-04-12T00:47:52 | INFO | tasks.pretrain : Creating dataset for ret
+2024-04-12T00:47:52 | INFO | tasks.shared_utils : Creating model
+2024-04-12T00:47:52 | INFO | models.umt : Build vision_encoder: vit_b16
+2024-04-12T00:47:52 | INFO | models.backbones.vit.vit : Num of patches: 2352
+2024-04-12T00:47:52 | INFO | models.backbones.vit.vit : Use checkpoint: True
+2024-04-12T00:47:52 | INFO | models.backbones.vit.vit : Checkpoint number: 12
+2024-04-12T00:47:52 | INFO | models.backbones.vit.vit : Student return index: []
+2024-04-12T00:48:00 | INFO | models.backbones.vit.vit : Loading pretrained weights from /datassd2/pretrained_models/Unmasked_Teacher/b16_ptk710_f8_res224.pth
+2024-04-12T00:48:00 | INFO | models.umt : Build text_encoder bert_base
+2024-04-12T00:48:01 | INFO | models.backbones.bert.xbert : build bert with cross_module: ca
+2024-04-12T00:48:01 | INFO | models.criterions : Norm type: l2
+2024-04-12T00:48:01 | INFO | models.criterions : Loss type: l2
+2024-04-12T00:48:03 | INFO | utils.optimizer : diff_names: [], diff_lr: None
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.temp: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.patch_embed.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.patch_embed.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.norm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.encoder.norm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.pool_norm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_encoder.pool_norm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.embeddings.word_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.embeddings.position_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.embeddings.token_type_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.embeddings.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.embeddings.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.vision_proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.text_proj.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.itm_head.weight: wd: 0.02, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : param module.itm_head.bias: wd: 0, lr: 1e-05
+2024-04-12T00:48:03 | INFO | utils.optimizer : optimizer -- lr=1e-05 wd=0.02 len(p)=140
+2024-04-12T00:48:03 | INFO | utils.optimizer : optimizer -- lr=1e-05 wd=0 len(p)=256
+2024-04-12T00:48:03 | INFO | tasks.shared_utils : Auto resuming
+2024-04-12T00:48:03 | INFO | tasks.shared_utils : Not found checkpoint in exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip
+2024-04-12T00:48:04 | INFO | tasks.shared_utils : _IncompatibleKeys(missing_keys=[], unexpected_keys=['clip_teacher.class_embedding', 'clip_teacher.positional_embedding', 'clip_teacher.proj', 'clip_teacher.conv1.weight', 'clip_teacher.ln_pre.weight', 'clip_teacher.ln_pre.bias', 'clip_teacher.transformer.resblocks.0.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.0.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.0.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.0.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.0.ln_1.weight', 'clip_teacher.transformer.resblocks.0.ln_1.bias', 'clip_teacher.transformer.resblocks.0.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.0.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.0.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.0.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.0.ln_2.weight', 'clip_teacher.transformer.resblocks.0.ln_2.bias', 'clip_teacher.transformer.resblocks.1.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.1.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.1.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.1.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.1.ln_1.weight', 'clip_teacher.transformer.resblocks.1.ln_1.bias', 'clip_teacher.transformer.resblocks.1.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.1.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.1.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.1.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.1.ln_2.weight', 'clip_teacher.transformer.resblocks.1.ln_2.bias', 'clip_teacher.transformer.resblocks.2.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.2.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.2.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.2.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.2.ln_1.weight', 'clip_teacher.transformer.resblocks.2.ln_1.bias', 'clip_teacher.transformer.resblocks.2.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.2.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.2.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.2.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.2.ln_2.weight', 'clip_teacher.transformer.resblocks.2.ln_2.bias', 'clip_teacher.transformer.resblocks.3.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.3.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.3.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.3.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.3.ln_1.weight', 'clip_teacher.transformer.resblocks.3.ln_1.bias', 'clip_teacher.transformer.resblocks.3.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.3.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.3.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.3.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.3.ln_2.weight', 'clip_teacher.transformer.resblocks.3.ln_2.bias', 'clip_teacher.transformer.resblocks.4.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.4.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.4.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.4.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.4.ln_1.weight', 'clip_teacher.transformer.resblocks.4.ln_1.bias', 'clip_teacher.transformer.resblocks.4.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.4.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.4.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.4.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.4.ln_2.weight', 'clip_teacher.transformer.resblocks.4.ln_2.bias', 'clip_teacher.transformer.resblocks.5.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.5.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.5.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.5.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.5.ln_1.weight', 'clip_teacher.transformer.resblocks.5.ln_1.bias', 'clip_teacher.transformer.resblocks.5.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.5.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.5.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.5.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.5.ln_2.weight', 'clip_teacher.transformer.resblocks.5.ln_2.bias', 'clip_teacher.transformer.resblocks.6.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.6.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.6.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.6.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.6.ln_1.weight', 'clip_teacher.transformer.resblocks.6.ln_1.bias', 'clip_teacher.transformer.resblocks.6.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.6.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.6.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.6.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.6.ln_2.weight', 'clip_teacher.transformer.resblocks.6.ln_2.bias', 'clip_teacher.transformer.resblocks.7.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.7.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.7.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.7.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.7.ln_1.weight', 'clip_teacher.transformer.resblocks.7.ln_1.bias', 'clip_teacher.transformer.resblocks.7.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.7.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.7.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.7.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.7.ln_2.weight', 'clip_teacher.transformer.resblocks.7.ln_2.bias', 'clip_teacher.transformer.resblocks.8.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.8.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.8.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.8.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.8.ln_1.weight', 'clip_teacher.transformer.resblocks.8.ln_1.bias', 'clip_teacher.transformer.resblocks.8.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.8.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.8.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.8.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.8.ln_2.weight', 'clip_teacher.transformer.resblocks.8.ln_2.bias', 'clip_teacher.transformer.resblocks.9.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.9.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.9.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.9.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.9.ln_1.weight', 'clip_teacher.transformer.resblocks.9.ln_1.bias', 'clip_teacher.transformer.resblocks.9.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.9.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.9.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.9.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.9.ln_2.weight', 'clip_teacher.transformer.resblocks.9.ln_2.bias', 'clip_teacher.transformer.resblocks.10.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.10.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.10.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.10.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.10.ln_1.weight', 'clip_teacher.transformer.resblocks.10.ln_1.bias', 'clip_teacher.transformer.resblocks.10.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.10.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.10.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.10.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.10.ln_2.weight', 'clip_teacher.transformer.resblocks.10.ln_2.bias', 'clip_teacher.transformer.resblocks.11.attn.in_proj_weight', 'clip_teacher.transformer.resblocks.11.attn.in_proj_bias', 'clip_teacher.transformer.resblocks.11.attn.out_proj.weight', 'clip_teacher.transformer.resblocks.11.attn.out_proj.bias', 'clip_teacher.transformer.resblocks.11.ln_1.weight', 'clip_teacher.transformer.resblocks.11.ln_1.bias', 'clip_teacher.transformer.resblocks.11.mlp.c_fc.weight', 'clip_teacher.transformer.resblocks.11.mlp.c_fc.bias', 'clip_teacher.transformer.resblocks.11.mlp.c_proj.weight', 'clip_teacher.transformer.resblocks.11.mlp.c_proj.bias', 'clip_teacher.transformer.resblocks.11.ln_2.weight', 'clip_teacher.transformer.resblocks.11.ln_2.bias', 'clip_teacher.ln_post.weight', 'clip_teacher.ln_post.bias', 'vision_encoder.clip_decoder.0.head.weight', 'vision_encoder.clip_decoder.0.head.bias', 'vision_encoder.clip_decoder.0.norm.weight', 'vision_encoder.clip_decoder.0.norm.bias', 'vision_encoder.clip_decoder.1.head.weight', 'vision_encoder.clip_decoder.1.head.bias', 'vision_encoder.clip_decoder.1.norm.weight', 'vision_encoder.clip_decoder.1.norm.bias', 'vision_encoder.clip_decoder.2.head.weight', 'vision_encoder.clip_decoder.2.head.bias', 'vision_encoder.clip_decoder.2.norm.weight', 'vision_encoder.clip_decoder.2.norm.bias', 'vision_encoder.clip_decoder.3.head.weight', 'vision_encoder.clip_decoder.3.head.bias', 'vision_encoder.clip_decoder.3.norm.weight', 'vision_encoder.clip_decoder.3.norm.bias', 'vision_encoder.clip_decoder.4.head.weight', 'vision_encoder.clip_decoder.4.head.bias', 'vision_encoder.clip_decoder.4.norm.weight', 'vision_encoder.clip_decoder.4.norm.bias', 'vision_encoder.clip_decoder.5.head.weight', 'vision_encoder.clip_decoder.5.head.bias', 'vision_encoder.clip_decoder.5.norm.weight', 'vision_encoder.clip_decoder.5.norm.bias', 'text_encoder.cls.predictions.bias', 'text_encoder.cls.predictions.transform.dense.weight', 'text_encoder.cls.predictions.transform.dense.bias', 'text_encoder.cls.predictions.transform.LayerNorm.weight', 'text_encoder.cls.predictions.transform.LayerNorm.bias', 'text_encoder.cls.predictions.decoder.weight', 'text_encoder.cls.predictions.decoder.bias'])
+2024-04-12T00:48:04 | INFO | tasks.shared_utils : Loaded checkpoint from /datassd2/pretrained_models/Unmasked_Teacher/multimodality/b16_25m.pth
+2024-04-12T00:48:04 | INFO | __main__ : training
+2024-04-12T00:48:05 | INFO | dataset.dataloader : MetaLoader has 1 dataloaders, 1448 batches in total
+dataloader index=0 name=video, batch-size=32 length(#batches)=1448 
+2024-04-12T00:48:29 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T00:48:29 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T00:48:29 | INFO | utils.basic_utils : Train Epoch: [0]  [   0/1448]  eta: 9:46:01  lr: 0.000000  temperature: 0.0112  video-loss_vtc: 1.7704  video-loss_vtm: 0.3314  time: 24.2827  data: 13.5810  max mem: 33050 res mem: 39610
+2024-04-12T00:48:29 | INFO | torch.nn.parallel.distributed : Reducer buckets have been rebuilt in this iteration.
+2024-04-12T00:55:27 | INFO | utils.basic_utils : Train Epoch: [0]  [ 100/1448]  eta: 1:38:19  lr: 0.000001  temperature: 0.0112  video-loss_vtc: 1.4865  video-loss_vtm: 0.2875  time: 4.1811  data: 0.0016  max mem: 34902 res mem: 39942
+2024-04-12T01:02:24 | INFO | utils.basic_utils : Train Epoch: [0]  [ 200/1448]  eta: 1:28:57  lr: 0.000001  temperature: 0.0113  video-loss_vtc: 1.1357  video-loss_vtm: 0.2143  time: 4.1718  data: 0.0018  max mem: 34902 res mem: 39942
+2024-04-12T01:09:21 | INFO | utils.basic_utils : Train Epoch: [0]  [ 300/1448]  eta: 1:21:06  lr: 0.000002  temperature: 0.0114  video-loss_vtc: 0.9417  video-loss_vtm: 0.0993  time: 4.1603  data: 0.0017  max mem: 34902 res mem: 39942
+2024-04-12T01:16:17 | INFO | utils.basic_utils : Train Epoch: [0]  [ 400/1448]  eta: 1:13:43  lr: 0.000003  temperature: 0.0115  video-loss_vtc: 0.8890  video-loss_vtm: 0.2048  time: 4.1611  data: 0.0018  max mem: 34902 res mem: 39942
+2024-04-12T01:23:13 | INFO | utils.basic_utils : Train Epoch: [0]  [ 500/1448]  eta: 1:06:29  lr: 0.000003  temperature: 0.0116  video-loss_vtc: 0.8936  video-loss_vtm: 0.1969  time: 4.1590  data: 0.0016  max mem: 34902 res mem: 39942
+2024-04-12T01:30:09 | INFO | utils.basic_utils : Train Epoch: [0]  [ 600/1448]  eta: 0:59:21  lr: 0.000004  temperature: 0.0117  video-loss_vtc: 0.9833  video-loss_vtm: 0.1965  time: 4.1591  data: 0.0016  max mem: 34902 res mem: 39942
+2024-04-12T01:37:04 | INFO | utils.basic_utils : Train Epoch: [0]  [ 700/1448]  eta: 0:52:16  lr: 0.000005  temperature: 0.0118  video-loss_vtc: 0.8773  video-loss_vtm: 0.1064  time: 4.1613  data: 0.0017  max mem: 34902 res mem: 39942
+2024-04-12T01:44:00 | INFO | utils.basic_utils : Train Epoch: [0]  [ 800/1448]  eta: 0:45:14  lr: 0.000006  temperature: 0.0118  video-loss_vtc: 0.8774  video-loss_vtm: 0.2111  time: 4.1593  data: 0.0017  max mem: 34902 res mem: 39942
+2024-04-12T01:50:56 | INFO | utils.basic_utils : Train Epoch: [0]  [ 900/1448]  eta: 0:38:13  lr: 0.000006  temperature: 0.0119  video-loss_vtc: 0.8712  video-loss_vtm: 0.1098  time: 4.1622  data: 0.0017  max mem: 34902 res mem: 39942
+2024-04-12T01:57:52 | INFO | utils.basic_utils : Train Epoch: [0]  [1000/1448]  eta: 0:31:14  lr: 0.000007  temperature: 0.0120  video-loss_vtc: 0.8540  video-loss_vtm: 0.1315  time: 4.1618  data: 0.0016  max mem: 34902 res mem: 39942
+2024-04-12T02:04:49 | INFO | utils.basic_utils : Train Epoch: [0]  [1100/1448]  eta: 0:24:15  lr: 0.000008  temperature: 0.0121  video-loss_vtc: 0.9692  video-loss_vtm: 0.0876  time: 4.1642  data: 0.0017  max mem: 34902 res mem: 39942
+2024-04-12T02:11:50 | INFO | utils.basic_utils : Train Epoch: [0]  [1200/1448]  eta: 0:17:17  lr: 0.000008  temperature: 0.0122  video-loss_vtc: 0.8239  video-loss_vtm: 0.1109  time: 4.2963  data: 0.0026  max mem: 34902 res mem: 39942
+2024-04-12T02:21:17 | INFO | utils.basic_utils : Train Epoch: [0]  [1300/1448]  eta: 0:10:36  lr: 0.000009  temperature: 0.0123  video-loss_vtc: 0.8127  video-loss_vtm: 0.0958  time: 7.3241  data: 2.7650  max mem: 34902 res mem: 39942
+2024-04-12T02:33:14 | INFO | utils.basic_utils : Train Epoch: [0]  [1400/1448]  eta: 0:03:36  lr: 0.000010  temperature: 0.0124  video-loss_vtc: 0.8840  video-loss_vtm: 0.2178  time: 6.7310  data: 2.1845  max mem: 34902 res mem: 39942
+2024-04-12T02:38:23 | INFO | utils.basic_utils : Train Epoch: [0]  [1447/1448]  eta: 0:00:04  lr: 0.000010  temperature: 0.0124  video-loss_vtc: 0.7911  video-loss_vtm: 0.0512  time: 5.5447  data: 1.1205  max mem: 34902 res mem: 39942
+2024-04-12T02:38:23 | INFO | utils.basic_utils : Train Epoch: [0] Total time: 1:50:18 (4.5710 s / it)
+2024-04-12T02:38:23 | INFO | __main__ : Averaged train stats: lr: 0.0000  temperature: 0.0118  video-loss_vtc: 0.9715  video-loss_vtm: 0.1601
+2024-04-12T02:38:23 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T02:38:23 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T02:39:01 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T02:39:01 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T02:39:02 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:38:56    time: 37.0855  data: 35.8114  max mem: 34902 res mem: 39942
+2024-04-12T02:44:30 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:05    time: 4.9121  data: 3.6892  max mem: 34902 res mem: 39942
+2024-04-12T02:44:30 | INFO | utils.basic_utils : extracting image feats Total time: 0:06:05 (5.7985 s / it)
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T02:44:47 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T02:44:48 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:24    time: 0.0491  data: 0.0030  max mem: 34902 res mem: 39942
+2024-04-12T02:44:55 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:30    time: 0.0775  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:45:03 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:23    time: 0.0775  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:45:11 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:15    time: 0.0768  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:45:18 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0771  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:45:26 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0770  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:45:26 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:38 (0.0769 s / it)
+2024-04-12T02:45:26 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T02:45:28 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:12:06    time: 1.4502  data: 0.0013  max mem: 34902 res mem: 39942
+2024-04-12T02:47:51 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:09:33    time: 1.3544  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:49:27 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:06:01    time: 0.7809  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:50:47 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:03:34    time: 0.8559  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:52:12 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:42    time: 0.8090  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:53:35 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.8248  data: 0.0000  max mem: 34902 res mem: 39942
+2024-04-12T02:53:35 | INFO | utils.basic_utils : Evaluation: Total time: 0:08:08 (0.9757 s / it)
+2024-04-12T02:54:33 | INFO | tasks.retrieval_utils : Evaluation time 0:16:10
+2024-04-12T02:54:35 | INFO | __main__ : Epoch 0
+2024-04-12T02:54:35 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/       43.60    94.0    97.75       78.45   43.95   94.45    97.65       78.68   78.57    51.15    52.35
+test_emb/   40.25    90.4    96.10       75.58   41.15   90.30    95.30       75.58   75.58    51.50    52.75
+2024-04-12T02:54:39 | INFO | dataset.dataloader : MetaLoader has 1 dataloaders, 1448 batches in total
+dataloader index=0 name=video, batch-size=32 length(#batches)=1448 
+2024-04-12T02:54:56 | INFO | utils.basic_utils : Train Epoch: [1]  [   0/1448]  eta: 7:04:41  lr: 0.000010  temperature: 0.0124  video-loss_vtc: 0.7315  video-loss_vtm: 0.0817  time: 17.5975  data: 13.1240  max mem: 34902 res mem: 41968
+2024-04-12T03:01:54 | INFO | utils.basic_utils : Train Epoch: [1]  [ 100/1448]  eta: 1:36:55  lr: 0.000010  temperature: 0.0125  video-loss_vtc: 0.7725  video-loss_vtm: 0.0516  time: 4.1762  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T03:08:53 | INFO | utils.basic_utils : Train Epoch: [1]  [ 200/1448]  eta: 1:28:22  lr: 0.000010  temperature: 0.0126  video-loss_vtc: 0.7399  video-loss_vtm: 0.0666  time: 4.2259  data: 0.0021  max mem: 34902 res mem: 41968
+2024-04-12T03:15:56 | INFO | utils.basic_utils : Train Epoch: [1]  [ 300/1448]  eta: 1:21:10  lr: 0.000010  temperature: 0.0127  video-loss_vtc: 0.7078  video-loss_vtm: 0.0344  time: 4.2038  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T03:22:54 | INFO | utils.basic_utils : Train Epoch: [1]  [ 400/1448]  eta: 1:13:50  lr: 0.000010  temperature: 0.0128  video-loss_vtc: 0.7234  video-loss_vtm: 0.0748  time: 4.1807  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T03:29:52 | INFO | utils.basic_utils : Train Epoch: [1]  [ 500/1448]  eta: 1:06:39  lr: 0.000010  temperature: 0.0128  video-loss_vtc: 0.6746  video-loss_vtm: 0.0705  time: 4.1665  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T03:36:51 | INFO | utils.basic_utils : Train Epoch: [1]  [ 600/1448]  eta: 0:59:32  lr: 0.000010  temperature: 0.0129  video-loss_vtc: 0.7506  video-loss_vtm: 0.0427  time: 4.1786  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T03:43:49 | INFO | utils.basic_utils : Train Epoch: [1]  [ 700/1448]  eta: 0:52:27  lr: 0.000010  temperature: 0.0130  video-loss_vtc: 0.7512  video-loss_vtm: 0.0624  time: 4.1783  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T03:50:46 | INFO | utils.basic_utils : Train Epoch: [1]  [ 800/1448]  eta: 0:45:24  lr: 0.000010  temperature: 0.0131  video-loss_vtc: 0.7476  video-loss_vtm: 0.1008  time: 4.1715  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T03:57:44 | INFO | utils.basic_utils : Train Epoch: [1]  [ 900/1448]  eta: 0:38:22  lr: 0.000009  temperature: 0.0131  video-loss_vtc: 0.7419  video-loss_vtm: 0.0804  time: 4.1762  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T04:04:41 | INFO | utils.basic_utils : Train Epoch: [1]  [1000/1448]  eta: 0:31:20  lr: 0.000009  temperature: 0.0132  video-loss_vtc: 0.7106  video-loss_vtm: 0.0562  time: 4.1707  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T04:11:38 | INFO | utils.basic_utils : Train Epoch: [1]  [1100/1448]  eta: 0:24:20  lr: 0.000009  temperature: 0.0132  video-loss_vtc: 0.7909  video-loss_vtm: 0.0271  time: 4.1725  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T04:18:36 | INFO | utils.basic_utils : Train Epoch: [1]  [1200/1448]  eta: 0:17:20  lr: 0.000009  temperature: 0.0132  video-loss_vtc: 0.6547  video-loss_vtm: 0.0943  time: 4.1741  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T04:25:33 | INFO | utils.basic_utils : Train Epoch: [1]  [1300/1448]  eta: 0:10:20  lr: 0.000009  temperature: 0.0132  video-loss_vtc: 0.7590  video-loss_vtm: 0.0627  time: 4.1803  data: 0.0022  max mem: 34902 res mem: 41968
+2024-04-12T04:32:31 | INFO | utils.basic_utils : Train Epoch: [1]  [1400/1448]  eta: 0:03:21  lr: 0.000009  temperature: 0.0133  video-loss_vtc: 0.7116  video-loss_vtm: 0.2198  time: 4.1736  data: 0.0024  max mem: 34902 res mem: 41968
+2024-04-12T04:35:47 | INFO | utils.basic_utils : Train Epoch: [1]  [1447/1448]  eta: 0:00:04  lr: 0.000009  temperature: 0.0133  video-loss_vtc: 0.7179  video-loss_vtm: 0.0317  time: 4.1655  data: 0.0021  max mem: 34902 res mem: 41968
+2024-04-12T04:35:47 | INFO | utils.basic_utils : Train Epoch: [1] Total time: 1:41:07 (4.1906 s / it)
+2024-04-12T04:35:47 | INFO | __main__ : Averaged train stats: lr: 0.0000  temperature: 0.0130  video-loss_vtc: 0.7241  video-loss_vtm: 0.0876
+2024-04-12T04:35:47 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T04:35:47 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T04:36:02 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T04:36:02 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T04:36:03 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:15:58    time: 15.2086  data: 14.0461  max mem: 34902 res mem: 41968
+2024-04-12T04:38:27 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:02    time: 2.1047  data: 1.0376  max mem: 34902 res mem: 41968
+2024-04-12T04:38:27 | INFO | utils.basic_utils : extracting image feats Total time: 0:02:39 (2.5246 s / it)
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T04:38:38 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T04:38:38 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:10    time: 0.0201  data: 0.0008  max mem: 34902 res mem: 41968
+2024-04-12T04:38:45 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:29    time: 0.0736  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:38:52 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:22    time: 0.0740  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:39:00 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:14    time: 0.0747  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:39:07 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0741  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:39:15 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0743  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:39:15 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:37 (0.0740 s / it)
+2024-04-12T04:39:15 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T04:39:16 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:06:46    time: 0.8120  data: 0.0006  max mem: 34902 res mem: 41968
+2024-04-12T04:40:37 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:05:24    time: 0.8154  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:41:56 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:04:01    time: 0.7938  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:43:16 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:02:40    time: 0.8008  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:44:34 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:20    time: 0.7752  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:45:53 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.7551  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T04:45:53 | INFO | utils.basic_utils : Evaluation: Total time: 0:06:38 (0.7950 s / it)
+2024-04-12T04:46:33 | INFO | tasks.retrieval_utils : Evaluation time 0:10:46
+2024-04-12T04:46:35 | INFO | __main__ : Epoch 1
+2024-04-12T04:46:35 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/        45.4   94.65    98.15       79.40   45.45   95.25     98.1       79.60    79.5    51.85     53.2
+test_emb/    42.9   90.95    96.10       76.65   43.45   90.80     96.0       76.75    76.7    54.45     55.6
+2024-04-12T04:46:56 | INFO | dataset.dataloader : MetaLoader has 1 dataloaders, 1448 batches in total
+dataloader index=0 name=video, batch-size=32 length(#batches)=1448 
+2024-04-12T04:47:14 | INFO | utils.basic_utils : Train Epoch: [2]  [   0/1448]  eta: 7:06:07  lr: 0.000009  temperature: 0.0133  video-loss_vtc: 0.6519  video-loss_vtm: 0.0156  time: 17.6571  data: 13.2651  max mem: 34902 res mem: 41968
+2024-04-12T04:54:11 | INFO | utils.basic_utils : Train Epoch: [2]  [ 100/1448]  eta: 1:36:48  lr: 0.000008  temperature: 0.0134  video-loss_vtc: 0.5895  video-loss_vtm: 0.0404  time: 4.1676  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T05:01:09 | INFO | utils.basic_utils : Train Epoch: [2]  [ 200/1448]  eta: 1:28:14  lr: 0.000008  temperature: 0.0134  video-loss_vtc: 0.6515  video-loss_vtm: 0.0735  time: 4.1686  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T05:08:06 | INFO | utils.basic_utils : Train Epoch: [2]  [ 300/1448]  eta: 1:20:42  lr: 0.000008  temperature: 0.0135  video-loss_vtc: 0.5882  video-loss_vtm: 0.0237  time: 4.1725  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T05:15:03 | INFO | utils.basic_utils : Train Epoch: [2]  [ 400/1448]  eta: 1:13:28  lr: 0.000008  temperature: 0.0135  video-loss_vtc: 0.6035  video-loss_vtm: 0.0652  time: 4.1702  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T05:22:01 | INFO | utils.basic_utils : Train Epoch: [2]  [ 500/1448]  eta: 1:06:23  lr: 0.000007  temperature: 0.0135  video-loss_vtc: 0.5627  video-loss_vtm: 0.0313  time: 4.1701  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T05:28:59 | INFO | utils.basic_utils : Train Epoch: [2]  [ 600/1448]  eta: 0:59:19  lr: 0.000007  temperature: 0.0135  video-loss_vtc: 0.6885  video-loss_vtm: 0.0365  time: 4.1852  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T05:35:56 | INFO | utils.basic_utils : Train Epoch: [2]  [ 700/1448]  eta: 0:52:16  lr: 0.000007  temperature: 0.0135  video-loss_vtc: 0.6781  video-loss_vtm: 0.0278  time: 4.1690  data: 0.0022  max mem: 34902 res mem: 41968
+2024-04-12T05:42:53 | INFO | utils.basic_utils : Train Epoch: [2]  [ 800/1448]  eta: 0:45:15  lr: 0.000007  temperature: 0.0136  video-loss_vtc: 0.6759  video-loss_vtm: 0.0851  time: 4.1761  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T05:49:50 | INFO | utils.basic_utils : Train Epoch: [2]  [ 900/1448]  eta: 0:38:15  lr: 0.000006  temperature: 0.0136  video-loss_vtc: 0.6305  video-loss_vtm: 0.0385  time: 4.1770  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T05:56:47 | INFO | utils.basic_utils : Train Epoch: [2]  [1000/1448]  eta: 0:31:15  lr: 0.000006  temperature: 0.0136  video-loss_vtc: 0.6464  video-loss_vtm: 0.0108  time: 4.1619  data: 0.0016  max mem: 34902 res mem: 41968
+2024-04-12T06:03:44 | INFO | utils.basic_utils : Train Epoch: [2]  [1100/1448]  eta: 0:24:16  lr: 0.000006  temperature: 0.0136  video-loss_vtc: 0.7250  video-loss_vtm: 0.0227  time: 4.1685  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T06:10:41 | INFO | utils.basic_utils : Train Epoch: [2]  [1200/1448]  eta: 0:17:17  lr: 0.000006  temperature: 0.0136  video-loss_vtc: 0.5427  video-loss_vtm: 0.0111  time: 4.1671  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T06:17:38 | INFO | utils.basic_utils : Train Epoch: [2]  [1300/1448]  eta: 0:10:19  lr: 0.000005  temperature: 0.0136  video-loss_vtc: 0.6371  video-loss_vtm: 0.0648  time: 4.1722  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T06:24:36 | INFO | utils.basic_utils : Train Epoch: [2]  [1400/1448]  eta: 0:03:20  lr: 0.000005  temperature: 0.0136  video-loss_vtc: 0.6202  video-loss_vtm: 0.0780  time: 4.1761  data: 0.0021  max mem: 34902 res mem: 41968
+2024-04-12T06:27:52 | INFO | utils.basic_utils : Train Epoch: [2]  [1447/1448]  eta: 0:00:04  lr: 0.000005  temperature: 0.0136  video-loss_vtc: 0.6932  video-loss_vtm: 0.0186  time: 4.1667  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T06:27:52 | INFO | utils.basic_utils : Train Epoch: [2] Total time: 1:40:55 (4.1821 s / it)
+2024-04-12T06:27:52 | INFO | __main__ : Averaged train stats: lr: 0.0000  temperature: 0.0135  video-loss_vtc: 0.6503  video-loss_vtm: 0.0573
+2024-04-12T06:27:52 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T06:27:52 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T06:28:07 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T06:28:07 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T06:28:08 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:15:51    time: 15.1045  data: 13.9233  max mem: 34902 res mem: 41968
+2024-04-12T06:30:28 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:02    time: 2.0403  data: 0.9750  max mem: 34902 res mem: 41968
+2024-04-12T06:30:28 | INFO | utils.basic_utils : extracting image feats Total time: 0:02:35 (2.4666 s / it)
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T06:30:39 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T06:30:39 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:11    time: 0.0221  data: 0.0008  max mem: 34902 res mem: 41968
+2024-04-12T06:30:46 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:29    time: 0.0735  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:30:53 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:22    time: 0.0739  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:31:01 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:14    time: 0.0742  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:31:08 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0745  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:31:16 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0747  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:31:16 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:37 (0.0740 s / it)
+2024-04-12T06:31:16 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T06:31:17 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:07:20    time: 0.8792  data: 0.0007  max mem: 34902 res mem: 41968
+2024-04-12T06:32:36 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:05:19    time: 0.7850  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:33:54 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:03:57    time: 0.7794  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:35:12 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:02:37    time: 0.7890  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:36:29 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:18    time: 0.7612  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:37:45 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.7295  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T06:37:45 | INFO | utils.basic_utils : Evaluation: Total time: 0:06:29 (0.7780 s / it)
+2024-04-12T06:38:27 | INFO | tasks.retrieval_utils : Evaluation time 0:10:35
+2024-04-12T06:38:29 | INFO | __main__ : Epoch 2
+2024-04-12T06:38:29 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/        46.5    95.1    98.35       79.98    46.4   95.45     98.2       80.02   80.00    52.95     53.6
+test_emb/    44.4    91.0    96.40       77.27    44.9   90.75     96.3       77.32   77.29    56.25     57.0
+2024-04-12T06:38:47 | INFO | dataset.dataloader : MetaLoader has 1 dataloaders, 1448 batches in total
+dataloader index=0 name=video, batch-size=32 length(#batches)=1448 
+2024-04-12T06:39:05 | INFO | utils.basic_utils : Train Epoch: [3]  [   0/1448]  eta: 7:13:12  lr: 0.000005  temperature: 0.0136  video-loss_vtc: 0.5978  video-loss_vtm: 0.0104  time: 17.9503  data: 13.9427  max mem: 34902 res mem: 41968
+2024-04-12T06:46:04 | INFO | utils.basic_utils : Train Epoch: [3]  [ 100/1448]  eta: 1:37:13  lr: 0.000005  temperature: 0.0136  video-loss_vtc: 0.5854  video-loss_vtm: 0.0414  time: 4.1725  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T06:53:01 | INFO | utils.basic_utils : Train Epoch: [3]  [ 200/1448]  eta: 1:28:20  lr: 0.000004  temperature: 0.0136  video-loss_vtc: 0.5864  video-loss_vtm: 0.0184  time: 4.1663  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T06:59:58 | INFO | utils.basic_utils : Train Epoch: [3]  [ 300/1448]  eta: 1:20:45  lr: 0.000004  temperature: 0.0136  video-loss_vtc: 0.5612  video-loss_vtm: 0.0066  time: 4.1697  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T07:06:55 | INFO | utils.basic_utils : Train Epoch: [3]  [ 400/1448]  eta: 1:13:29  lr: 0.000004  temperature: 0.0136  video-loss_vtc: 0.6296  video-loss_vtm: 0.0331  time: 4.1728  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T07:13:52 | INFO | utils.basic_utils : Train Epoch: [3]  [ 500/1448]  eta: 1:06:21  lr: 0.000004  temperature: 0.0136  video-loss_vtc: 0.5404  video-loss_vtm: 0.0035  time: 4.1671  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T07:20:48 | INFO | utils.basic_utils : Train Epoch: [3]  [ 600/1448]  eta: 0:59:16  lr: 0.000003  temperature: 0.0136  video-loss_vtc: 0.6570  video-loss_vtm: 0.0796  time: 4.1624  data: 0.0022  max mem: 34902 res mem: 41968
+2024-04-12T07:27:45 | INFO | utils.basic_utils : Train Epoch: [3]  [ 700/1448]  eta: 0:52:14  lr: 0.000003  temperature: 0.0136  video-loss_vtc: 0.5866  video-loss_vtm: 0.0286  time: 4.1644  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T07:34:41 | INFO | utils.basic_utils : Train Epoch: [3]  [ 800/1448]  eta: 0:45:13  lr: 0.000003  temperature: 0.0136  video-loss_vtc: 0.6110  video-loss_vtm: 0.0224  time: 4.1641  data: 0.0025  max mem: 34902 res mem: 41968
+2024-04-12T07:41:37 | INFO | utils.basic_utils : Train Epoch: [3]  [ 900/1448]  eta: 0:38:12  lr: 0.000003  temperature: 0.0136  video-loss_vtc: 0.6261  video-loss_vtm: 0.0357  time: 4.1647  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T07:48:34 | INFO | utils.basic_utils : Train Epoch: [3]  [1000/1448]  eta: 0:31:13  lr: 0.000002  temperature: 0.0136  video-loss_vtc: 0.6425  video-loss_vtm: 0.0117  time: 4.1666  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T07:55:30 | INFO | utils.basic_utils : Train Epoch: [3]  [1100/1448]  eta: 0:24:14  lr: 0.000002  temperature: 0.0136  video-loss_vtc: 0.6870  video-loss_vtm: 0.0110  time: 4.1647  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T08:02:27 | INFO | utils.basic_utils : Train Epoch: [3]  [1200/1448]  eta: 0:17:16  lr: 0.000002  temperature: 0.0136  video-loss_vtc: 0.5840  video-loss_vtm: 0.0320  time: 4.1712  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T08:09:24 | INFO | utils.basic_utils : Train Epoch: [3]  [1300/1448]  eta: 0:10:18  lr: 0.000002  temperature: 0.0136  video-loss_vtc: 0.6406  video-loss_vtm: 0.0613  time: 4.1709  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T08:16:21 | INFO | utils.basic_utils : Train Epoch: [3]  [1400/1448]  eta: 0:03:20  lr: 0.000002  temperature: 0.0136  video-loss_vtc: 0.6537  video-loss_vtm: 0.1040  time: 4.1772  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T08:19:37 | INFO | utils.basic_utils : Train Epoch: [3]  [1447/1448]  eta: 0:00:04  lr: 0.000001  temperature: 0.0136  video-loss_vtc: 0.6430  video-loss_vtm: 0.0222  time: 4.1657  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T08:19:37 | INFO | utils.basic_utils : Train Epoch: [3] Total time: 1:40:50 (4.1782 s / it)
+2024-04-12T08:19:38 | INFO | __main__ : Averaged train stats: lr: 0.0000  temperature: 0.0136  video-loss_vtc: 0.6072  video-loss_vtm: 0.0410
+2024-04-12T08:19:38 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T08:19:38 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T08:19:52 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T08:19:52 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T08:19:53 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:15:22    time: 14.6466  data: 13.5093  max mem: 34902 res mem: 41968
+2024-04-12T08:22:10 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:02    time: 2.0761  data: 1.0117  max mem: 34902 res mem: 41968
+2024-04-12T08:22:10 | INFO | utils.basic_utils : extracting image feats Total time: 0:02:32 (2.4137 s / it)
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T08:22:22 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T08:22:22 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:11    time: 0.0231  data: 0.0011  max mem: 34902 res mem: 41968
+2024-04-12T08:22:29 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:29    time: 0.0737  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:22:36 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:22    time: 0.0736  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:22:44 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:14    time: 0.0739  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:22:51 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0740  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:22:59 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0745  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:22:59 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:36 (0.0737 s / it)
+2024-04-12T08:22:59 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T08:22:59 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:06:56    time: 0.8313  data: 0.0008  max mem: 34902 res mem: 41968
+2024-04-12T08:24:17 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:05:10    time: 0.7674  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:25:33 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:03:51    time: 0.7476  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:26:49 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:02:33    time: 0.7649  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:28:05 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:17    time: 0.7600  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:29:20 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.7333  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T08:29:20 | INFO | utils.basic_utils : Evaluation: Total time: 0:06:21 (0.7617 s / it)
+2024-04-12T08:29:59 | INFO | tasks.retrieval_utils : Evaluation time 0:10:21
+2024-04-12T08:30:01 | INFO | __main__ : Epoch 3
+2024-04-12T08:30:01 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/       46.75   94.40     98.3       79.82   47.60    94.9    98.25       80.25   80.03     53.7    54.75
+test_emb/   44.00   91.55     96.6       77.38   45.75    91.2    96.35       77.77   77.58     57.2    59.05
+2024-04-12T08:30:21 | INFO | dataset.dataloader : MetaLoader has 1 dataloaders, 1448 batches in total
+dataloader index=0 name=video, batch-size=32 length(#batches)=1448 
+2024-04-12T08:30:39 | INFO | utils.basic_utils : Train Epoch: [4]  [   0/1448]  eta: 7:21:37  lr: 0.000001  temperature: 0.0136  video-loss_vtc: 0.5537  video-loss_vtm: 0.0030  time: 18.2995  data: 13.6266  max mem: 34902 res mem: 41968
+2024-04-12T08:37:37 | INFO | utils.basic_utils : Train Epoch: [4]  [ 100/1448]  eta: 1:36:57  lr: 0.000001  temperature: 0.0136  video-loss_vtc: 0.5573  video-loss_vtm: 0.0187  time: 4.1696  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T08:44:34 | INFO | utils.basic_utils : Train Epoch: [4]  [ 200/1448]  eta: 1:28:17  lr: 0.000001  temperature: 0.0135  video-loss_vtc: 0.5536  video-loss_vtm: 0.0150  time: 4.1679  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T08:51:31 | INFO | utils.basic_utils : Train Epoch: [4]  [ 300/1448]  eta: 1:20:45  lr: 0.000001  temperature: 0.0135  video-loss_vtc: 0.5264  video-loss_vtm: 0.0142  time: 4.1720  data: 0.0017  max mem: 34902 res mem: 41968
+2024-04-12T08:58:28 | INFO | utils.basic_utils : Train Epoch: [4]  [ 400/1448]  eta: 1:13:30  lr: 0.000001  temperature: 0.0135  video-loss_vtc: 0.5972  video-loss_vtm: 0.0056  time: 4.1715  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T09:05:26 | INFO | utils.basic_utils : Train Epoch: [4]  [ 500/1448]  eta: 1:06:22  lr: 0.000001  temperature: 0.0135  video-loss_vtc: 0.4674  video-loss_vtm: 0.0086  time: 4.1721  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T09:12:22 | INFO | utils.basic_utils : Train Epoch: [4]  [ 600/1448]  eta: 0:59:17  lr: 0.000001  temperature: 0.0135  video-loss_vtc: 0.6490  video-loss_vtm: 0.0287  time: 4.1718  data: 0.0018  max mem: 34902 res mem: 41968
+2024-04-12T09:19:19 | INFO | utils.basic_utils : Train Epoch: [4]  [ 700/1448]  eta: 0:52:15  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.5686  video-loss_vtm: 0.0135  time: 4.1653  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T09:26:16 | INFO | utils.basic_utils : Train Epoch: [4]  [ 800/1448]  eta: 0:45:14  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6179  video-loss_vtm: 0.0254  time: 4.1717  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T09:33:13 | INFO | utils.basic_utils : Train Epoch: [4]  [ 900/1448]  eta: 0:38:14  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6121  video-loss_vtm: 0.0091  time: 4.1757  data: 0.0022  max mem: 34902 res mem: 41968
+2024-04-12T09:40:11 | INFO | utils.basic_utils : Train Epoch: [4]  [1000/1448]  eta: 0:31:15  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6026  video-loss_vtm: 0.0202  time: 4.1727  data: 0.0021  max mem: 34902 res mem: 41968
+2024-04-12T09:47:08 | INFO | utils.basic_utils : Train Epoch: [4]  [1100/1448]  eta: 0:24:16  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6806  video-loss_vtm: 0.0146  time: 4.1681  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T09:54:04 | INFO | utils.basic_utils : Train Epoch: [4]  [1200/1448]  eta: 0:17:17  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6041  video-loss_vtm: 0.0078  time: 4.1685  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T10:01:02 | INFO | utils.basic_utils : Train Epoch: [4]  [1300/1448]  eta: 0:10:18  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6387  video-loss_vtm: 0.0718  time: 4.1666  data: 0.0020  max mem: 34902 res mem: 41968
+2024-04-12T10:07:58 | INFO | utils.basic_utils : Train Epoch: [4]  [1400/1448]  eta: 0:03:20  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6172  video-loss_vtm: 0.1669  time: 4.1722  data: 0.0019  max mem: 34902 res mem: 41968
+2024-04-12T10:11:15 | INFO | utils.basic_utils : Train Epoch: [4]  [1447/1448]  eta: 0:00:04  lr: 0.000000  temperature: 0.0135  video-loss_vtc: 0.6594  video-loss_vtm: 0.0074  time: 4.1797  data: 0.0022  max mem: 34902 res mem: 41968
+2024-04-12T10:11:15 | INFO | utils.basic_utils : Train Epoch: [4] Total time: 1:40:53 (4.1808 s / it)
+2024-04-12T10:11:15 | INFO | __main__ : Averaged train stats: lr: 0.0000  temperature: 0.0135  video-loss_vtc: 0.5892  video-loss_vtm: 0.0331
+2024-04-12T10:11:15 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T10:11:15 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T10:11:29 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T10:11:29 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T10:11:30 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:15:20    time: 14.6107  data: 13.4966  max mem: 34902 res mem: 41968
+2024-04-12T10:13:47 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:02    time: 2.0211  data: 0.9634  max mem: 34902 res mem: 41968
+2024-04-12T10:13:47 | INFO | utils.basic_utils : extracting image feats Total time: 0:02:30 (2.3954 s / it)
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T10:13:57 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T10:13:57 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:13    time: 0.0272  data: 0.0009  max mem: 34902 res mem: 41968
+2024-04-12T10:14:04 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:29    time: 0.0736  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:14:12 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:22    time: 0.0738  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:14:19 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:14    time: 0.0740  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:14:26 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0741  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:14:34 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0742  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:14:34 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:36 (0.0738 s / it)
+2024-04-12T10:14:34 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T10:14:35 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:06:51    time: 0.8210  data: 0.0006  max mem: 34902 res mem: 41968
+2024-04-12T10:15:52 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:05:11    time: 0.7752  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:17:09 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:03:52    time: 0.7589  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:18:25 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:02:34    time: 0.7712  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:19:42 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:17    time: 0.7589  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:20:56 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.7166  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:20:56 | INFO | utils.basic_utils : Evaluation: Total time: 0:06:22 (0.7636 s / it)
+2024-04-12T10:21:33 | INFO | tasks.retrieval_utils : Evaluation time 0:10:18
+2024-04-12T10:21:35 | INFO | __main__ : Epoch 4
+2024-04-12T10:21:35 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/       47.45   94.75    98.25       80.15   47.95    95.2    98.25       80.47   80.31     54.3    55.55
+test_emb/   44.75   91.70    96.50       77.65   45.90    91.3    96.25       77.82   77.73     57.9    58.90
+2024-04-12T10:21:52 | INFO | __main__ : Training time 9:33:48
+2024-04-12T10:21:52 | INFO | __main__ : best epoch 4 [config.stop_key test/]
+2024-04-12T10:21:52 | INFO | __main__ : Checkpoints and Logs saved at exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip
+2024-04-12T10:21:53 | INFO | __main__ : ===========> START eval_after_training [['test']]
+2024-04-12T10:21:53 | INFO | __main__ : config: 
+{'data_dir': '/data2/dy/code/unmasked_teacher/umt_data', 'data_root': '/data2/dy/code/unmasked_teacher/umt_data/videos_images', 'anno_root_pt': '/data2/dy/code/unmasked_teacher/umt_data/anno_pretrain', 'anno_root_downstream': '/data2/dy/code/unmasked_teacher/umt_data/anno_downstream', 'TextEncoders': {'bert': {'name': 'bert_base', 'pretrained': 'bert-base-uncased', 'config': 'configs/config_bert.json', 'd_model': 768, 'fusion_layer': 9}, 'bert_large': {'name': 'bert_large', 'pretrained': 'bert-large-uncased', 'config': 'configs/config_bert_large.json', 'd_model': 1024, 'fusion_layer': 19}}, 'train_file': ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/shuffle/train_reverse_rewrite_shuffle.json', '/data2/dy/temporal_video/dataset', 'video'], 'test_file': {'test': ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/test2k.json', '/data2/dy/temporal_video/dataset', 'video']}, 'test_types': ['test'], 'num_workers': 6, 'stop_key': 'test/', 'is_paragraph_retrieval': False, 'num_frames': 12, 'num_frames_test': 12, 'batch_size': 32, 'max_txt_l': 32, 'evaluate': True, 'train_shuffle': False, 'inputs': {'image_res': 224, 'video_input': {'num_frames': 12, 'sample_type': 'rand', 'num_frames_test': 12, 'sample_type_test': 'middle', 'random_aug': False}, 'max_txt_l': {'image': 32, 'video': 32}, 'batch_size': {'image': 32, 'video': 32}, 'batch_size_test': {'image': 32, 'video': 32}}, 'text_enc': 'bert', 'model': {'model_cls': 'UMT', 'vision_encoder': {'name': 'vit_b16', 'img_size': 224, 'patch_size': 16, 'd_model': 768, 'encoder_embed_dim': 768, 'encoder_depth': 12, 'encoder_num_heads': 12, 'drop_path_rate': 0.2, 'num_frames': 12, 'tubelet_size': 1, 'use_checkpoint': True, 'checkpoint_num': 12, 'clip_decoder_embed_dim': 768, 'clip_output_dim': 512, 'clip_return_layer': 0, 'clip_student_return_interval': 1, 'pretrained': '/datassd2/pretrained_models/Unmasked_Teacher/b16_ptk710_f8_res224.pth', 'clip_teacher': 'none', 'clip_img_size': 224, 'clip_return_interval': 1, 'video_mask_type': 'attention', 'video_mask_ratio': 0.0, 'video_double_mask_ratio': 0.0, 'image_mask_type': 'attention', 'image_mask_ratio': 0.0, 'image_double_mask_ratio': 0.0, 'keep_temporal': True}, 'text_encoder': {'name': 'bert_base', 'pretrained': 'bert-base-uncased', 'config': 'configs/config_bert.json', 'd_model': 768, 'fusion_layer': 9}, 'multimodal': {'enable': True}, 'embed_dim': 512, 'temp': 0.07}, 'criterion': {'loss_weight': {'vtc': 1.0, 'mlm': 0.0, 'vtm': 1.0, 'uta': 0.0}, 'vtm_hard_neg': True, 'mlm_masking_prob': 0.5, 'uta_norm_type': 'l2', 'uta_loss_type': 'l2'}, 'optimizer': {'opt': 'adamW', 'lr': 1e-05, 'opt_betas': [0.9, 0.999], 'weight_decay': 0.02, 'max_grad_norm': -1, 'different_lr': {'enable': False, 'module_names': [], 'lr': 0.001}}, 'scheduler': {'sched': 'cosine', 'epochs': 5, 'min_lr_multi': 0.01, 'warmup_epochs': 1, 'num_training_steps': 7240, 'num_warmup_steps': 1448}, 'zero_shot': False, 'deep_fusion': False, 'evaluation': {'eval_frame_ensemble': 'concat', 'eval_x_only': False, 'k_test': 128, 'eval_offload': True}, 'fp16': True, 'gradient_checkpointing': True, 'wandb': {'enable': False, 'entity': 'user', 'project': 'umt_ret'}, 'dist_url': 'env://', 'device': 'cuda', 'mode': 'pt', 'output_dir': 'exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/eval_after_training', 'resume': False, 'debug': False, 'log_freq': 100, 'seed': 42, 'save_latest': True, 'auto_resume': True, 'pretrained_path': 'exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/ckpt_best.pth', 'rank': 0, 'world_size': 4, 'gpu': 0, 'distributed': True, 'dist_backend': 'nccl', 'result_dir': 'exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/eval_after_training'}
+2024-04-12T10:21:53 | INFO | __main__ : train_file: ['/data2/dy/code/unmasked_teacher/umt_data/anno_downstream/reversed_in_time/shuffle/train_reverse_rewrite_shuffle.json', '/data2/dy/temporal_video/dataset', 'video']
+2024-04-12T10:21:53 | INFO | tasks.pretrain : Creating dataset for ret
+2024-04-12T10:21:54 | INFO | tasks.shared_utils : Creating model
+2024-04-12T10:21:54 | INFO | models.umt : Build vision_encoder: vit_b16
+2024-04-12T10:21:54 | INFO | models.backbones.vit.vit : Num of patches: 2352
+2024-04-12T10:21:54 | INFO | models.backbones.vit.vit : Use checkpoint: True
+2024-04-12T10:21:54 | INFO | models.backbones.vit.vit : Checkpoint number: 12
+2024-04-12T10:21:54 | INFO | models.backbones.vit.vit : Student return index: []
+2024-04-12T10:22:03 | INFO | models.backbones.vit.vit : Loading pretrained weights from /datassd2/pretrained_models/Unmasked_Teacher/b16_ptk710_f8_res224.pth
+2024-04-12T10:22:03 | INFO | models.umt : Build text_encoder bert_base
+2024-04-12T10:22:04 | INFO | models.backbones.bert.xbert : build bert with cross_module: ca
+2024-04-12T10:22:04 | INFO | models.criterions : Norm type: l2
+2024-04-12T10:22:04 | INFO | models.criterions : Loss type: l2
+2024-04-12T10:22:04 | INFO | utils.optimizer : diff_names: [], diff_lr: None
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.temp: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.patch_embed.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.patch_embed.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.0.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.1.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.2.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.3.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.4.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.5.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.6.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.7.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.8.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.9.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.10.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm1.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.q_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.v_bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.qkv.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.attn.proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm2.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.norm2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc1.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc1.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc2.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.blocks.11.mlp.fc2.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.norm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.encoder.norm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.pool_norm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_encoder.pool_norm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.embeddings.word_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.embeddings.position_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.embeddings.token_type_embeddings.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.embeddings.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.embeddings.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.0.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.1.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.2.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.3.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.4.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.5.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.6.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.7.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.8.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.9.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.10.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.attention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.query.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.query.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.key.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.key.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.value.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.self.value.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.crossattention.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.intermediate.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.intermediate.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.dense.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.dense.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.LayerNorm.weight: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_encoder.encoder.layer.11.output.LayerNorm.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.vision_proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_proj.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.text_proj.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.itm_head.weight: wd: 0.02, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : param module.itm_head.bias: wd: 0, lr: 1e-05
+2024-04-12T10:22:04 | INFO | utils.optimizer : optimizer -- lr=1e-05 wd=0.02 len(p)=140
+2024-04-12T10:22:04 | INFO | utils.optimizer : optimizer -- lr=1e-05 wd=0 len(p)=256
+2024-04-12T10:22:04 | INFO | tasks.shared_utils : Auto resuming
+2024-04-12T10:22:04 | INFO | tasks.shared_utils : Not found checkpoint in exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/eval_after_training
+2024-04-12T10:22:06 | INFO | tasks.shared_utils : <All keys matched successfully>
+2024-04-12T10:22:06 | INFO | tasks.shared_utils : Loaded checkpoint from exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/ckpt_best.pth
+2024-04-12T10:22:06 | INFO | __main__ : Start evaluation
+2024-04-12T10:22:06 | INFO | tasks.retrieval_utils : Start evaluation for media_type=video
+2024-04-12T10:22:06 | INFO | tasks.retrieval_utils : Computing dual encoder features...
+2024-04-12T10:22:23 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T10:22:23 | WARNING | py.warnings : /data2/dy/code/unmasked_teacher/multi_modality/utils/distributed.py:18: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  builtin_warn(*args, **kwargs)
+
+2024-04-12T10:22:24 | INFO | utils.basic_utils : extracting image feats  [ 0/63]  eta: 0:17:23    time: 16.5664  data: 15.4678  max mem: 34902 res mem: 41968
+2024-04-12T10:24:43 | INFO | utils.basic_utils : extracting image feats  [62/63]  eta: 0:00:02    time: 2.0246  data: 0.9748  max mem: 34902 res mem: 41968
+2024-04-12T10:24:43 | INFO | utils.basic_utils : extracting image feats Total time: 0:02:35 (2.4655 s / it)
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : Finished feature extraction
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product]
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : Computing ITC scores [dot-product], done!
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : Rerank dual-encoder results with cross-encoder...
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : i2t_scores.shape torch.Size([501, 2000])
+2024-04-12T10:24:53 | INFO | tasks.retrieval_utils : n_clip_per_video=1, with eval_frame_ensemble=concat
+2024-04-12T10:24:53 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:00:10    time: 0.0219  data: 0.0007  max mem: 34902 res mem: 41968
+2024-04-12T10:25:01 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:00:29    time: 0.0736  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:25:08 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:00:22    time: 0.0738  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:25:16 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:00:14    time: 0.0741  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:25:23 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:00:07    time: 0.0740  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:25:30 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.0750  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:25:30 | INFO | utils.basic_utils : Evaluation: Total time: 0:00:36 (0.0738 s / it)
+2024-04-12T10:25:30 | INFO | tasks.retrieval_utils : t2i_scores.shape torch.Size([501, 2000])
+2024-04-12T10:25:31 | INFO | utils.basic_utils : Evaluation:  [  0/501]  eta: 0:07:19    time: 0.8772  data: 0.0005  max mem: 34902 res mem: 41968
+2024-04-12T10:26:50 | INFO | utils.basic_utils : Evaluation:  [100/501]  eta: 0:05:14    time: 0.7930  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:28:07 | INFO | utils.basic_utils : Evaluation:  [200/501]  eta: 0:03:53    time: 0.7527  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:29:23 | INFO | utils.basic_utils : Evaluation:  [300/501]  eta: 0:02:35    time: 0.7658  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:30:36 | INFO | utils.basic_utils : Evaluation:  [400/501]  eta: 0:01:17    time: 0.7229  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:31:49 | INFO | utils.basic_utils : Evaluation:  [500/501]  eta: 0:00:00    time: 0.7038  data: 0.0000  max mem: 34902 res mem: 41968
+2024-04-12T10:31:49 | INFO | utils.basic_utils : Evaluation: Total time: 0:06:18 (0.7550 s / it)
+2024-04-12T10:32:27 | INFO | tasks.retrieval_utils : Evaluation time 0:10:20
+2024-04-12T10:32:28 | INFO | __main__ : Epoch 0
+2024-04-12T10:32:28 | INFO | __main__ : 
+           txt_r1  txt_r5  txt_r10  txt_r_mean  img_r1  img_r5  img_r10  img_r_mean  r_mean  txt_acc  img_acc
+test/       47.45   94.75    98.25       80.15   47.95    95.2    98.25       80.47   80.31     54.3    55.55
+test_emb/   44.75   91.70    96.50       77.65   45.90    91.3    96.25       77.82   77.73     57.9    58.90
+2024-04-12T10:32:28 | INFO | __main__ : Training time 0:10:22
+2024-04-12T10:32:28 | INFO | __main__ : best epoch 0 [config.stop_key test/]
+2024-04-12T10:32:28 | INFO | __main__ : Checkpoints and Logs saved at exp/finetuning/ret_rtime/b16_25m_200k_shuffle_hardnegative_noflip/eval_after_training

@@ -1,0 +1,61 @@
+2024-01-19 12:58:37,762 INFO    StreamThr :281817 [internal.py:wandb_internal():86] W&B internal server running at pid: 281817, started at: 2024-01-19 12:58:37.762198
+2024-01-19 12:58:37,764 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status
+2024-01-19 12:58:37,771 INFO    WriterThread:281817 [datastore.py:open_for_write():85] open: /data2/dy/code/unmasked_teacher/multi_modality/wandb/offline-run-20240119_125837-ggdy0u3v/run-ggdy0u3v.wandb
+2024-01-19 12:58:37,828 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: run_start
+2024-01-19 12:58:37,858 DEBUG   HandlerThread:281817 [system_info.py:__init__():32] System info init
+2024-01-19 12:58:37,858 DEBUG   HandlerThread:281817 [system_info.py:__init__():47] System info init done
+2024-01-19 12:58:37,859 INFO    HandlerThread:281817 [system_monitor.py:start():181] Starting system monitor
+2024-01-19 12:58:37,859 INFO    SystemMonitor:281817 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2024-01-19 12:58:37,859 INFO    HandlerThread:281817 [system_monitor.py:probe():201] Collecting system info
+2024-01-19 12:58:37,859 INFO    SystemMonitor:281817 [interfaces.py:start():190] Started cpu monitoring
+2024-01-19 12:58:37,860 INFO    SystemMonitor:281817 [interfaces.py:start():190] Started disk monitoring
+2024-01-19 12:58:37,861 INFO    SystemMonitor:281817 [interfaces.py:start():190] Started gpu monitoring
+2024-01-19 12:58:37,862 INFO    SystemMonitor:281817 [interfaces.py:start():190] Started memory monitoring
+2024-01-19 12:58:37,863 INFO    SystemMonitor:281817 [interfaces.py:start():190] Started network monitoring
+2024-01-19 12:58:37,908 DEBUG   HandlerThread:281817 [system_info.py:probe():196] Probing system
+2024-01-19 12:58:37,910 DEBUG   HandlerThread:281817 [system_info.py:_probe_git():181] Probing git
+2024-01-19 12:58:37,917 DEBUG   HandlerThread:281817 [system_info.py:_probe_git():189] Probing git done
+2024-01-19 12:58:37,917 DEBUG   HandlerThread:281817 [system_info.py:probe():244] Probing system done
+2024-01-19 12:58:37,917 DEBUG   HandlerThread:281817 [system_monitor.py:probe():210] {'os': 'Linux-5.15.0-69-generic-x86_64-with-glibc2.27', 'python': '3.10.8', 'heartbeatAt': '2024-01-19T12:58:37.908430', 'startedAt': '2024-01-19T12:58:37.753596', 'docker': None, 'cuda': None, 'args': ('exp/finetuning/ret_rtime/b16_25m.py', 'pretrained_path', '/datassd2/pretrained_models/Unmasked_Teacher/multimodality/b16_25m.pth', 'output_dir', 'exp/finetuning/ret_rtime/b16_25m_20k_12frame_reverse_noshuffle_vtm'), 'state': 'running', 'program': '/data2/dy/code/unmasked_teacher/multi_modality/tasks/retrieval.py', 'codePathLocal': 'tasks/retrieval.py', 'codePath': 'multi_modality/tasks/retrieval.py', 'git': {'remote': 'git@github.com:OpenGVLab/unmasked_teacher.git', 'commit': '702af40784e034fe889216215de8538ffb696f48'}, 'email': '648039209@qq.com', 'root': '/data2/dy/code/unmasked_teacher', 'host': 'aries_dy_2224', 'username': 'root', 'executable': '/opt/conda/bin/python', 'cpu_count': 32, 'cpu_count_logical': 64, 'cpu_freq': {'current': 1.764859375000002, 'min': 1200.0, 'max': 3900.0}, 'cpu_freq_per_core': [{'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 2.3, 'min': 1200.0, 'max': 3900.0}, {'current': 3.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 3.628, 'min': 1200.0, 'max': 3900.0}, {'current': 3.628, 'min': 1200.0, 'max': 3900.0}, {'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 2.4, 'min': 1200.0, 'max': 3900.0}, {'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.805, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.3, 'min': 1200.0, 'max': 3900.0}, {'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.627, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 2.4, 'min': 1200.0, 'max': 3900.0}, {'current': 1.4, 'min': 1200.0, 'max': 3900.0}, {'current': 2.5, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 3.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}, {'current': 1.2, 'min': 1200.0, 'max': 3900.0}], 'disk': {'/': {'total': 1831.6662673950195, 'used': 964.6210823059082}}, 'gpu': 'NVIDIA RTX A6000', 'gpu_count': 8, 'gpu_devices': [{'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}], 'memory': {'total': 1007.5536231994629}}
+2024-01-19 12:58:37,917 INFO    HandlerThread:281817 [system_monitor.py:probe():211] Finished collecting system info
+2024-01-19 12:58:37,917 INFO    HandlerThread:281817 [system_monitor.py:probe():214] Publishing system info
+2024-01-19 12:58:37,917 DEBUG   HandlerThread:281817 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2024-01-19 12:58:37,918 DEBUG   HandlerThread:281817 [system_info.py:_save_pip():68] Saving pip packages done
+2024-01-19 12:58:37,918 DEBUG   HandlerThread:281817 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2024-01-19 12:58:43,462 DEBUG   HandlerThread:281817 [system_info.py:_save_conda():87] Saving conda packages done
+2024-01-19 12:58:43,464 INFO    HandlerThread:281817 [system_monitor.py:probe():216] Finished publishing system info
+2024-01-19 12:58:43,471 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:58:43,471 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: keepalive
+2024-01-19 12:58:43,472 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:58:48,473 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:58:48,474 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:58:53,475 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:58:53,475 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:58:58,477 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:58:58,477 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:03,478 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:59:03,479 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:08,480 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:59:08,480 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:13,481 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:59:13,482 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:18,483 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:59:18,483 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:23,484 DEBUG   HandlerThread:281817 [handler.py:handle_request():144] handle_request: status_report
+2024-01-19 12:59:23,484 DEBUG   SenderThread:281817 [sender.py:send_request():406] send_request: status_report
+2024-01-19 12:59:25,881 INFO    memory    :281817 [interfaces.py:monitor():140] Process proc.memory.rssMB has exited.
+2024-01-19 12:59:25,881 DEBUG   SystemMonitor:281817 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2024-01-19 12:59:25,882 DEBUG   SystemMonitor:281817 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2024-01-19 12:59:25,882 DEBUG   SystemMonitor:281817 [system_monitor.py:_start():170] Publishing last batch of metrics
+2024-01-19 12:59:26,817 WARNING StreamThr :281817 [internal.py:is_dead():414] Internal process exiting, parent pid 281646 disappeared
+2024-01-19 12:59:26,818 ERROR   StreamThr :281817 [internal.py:wandb_internal():152] Internal process shutdown.
+2024-01-19 12:59:26,883 INFO    HandlerThread:281817 [handler.py:finish():840] shutting down handler
+2024-01-19 12:59:26,883 INFO    WriterThread:281817 [datastore.py:close():294] close: /data2/dy/code/unmasked_teacher/multi_modality/wandb/offline-run-20240119_125837-ggdy0u3v/run-ggdy0u3v.wandb
+2024-01-19 12:59:26,884 INFO    HandlerThread:281817 [system_monitor.py:finish():190] Stopping system monitor
+2024-01-19 12:59:26,884 INFO    HandlerThread:281817 [interfaces.py:finish():202] Joined cpu monitor
+2024-01-19 12:59:26,884 INFO    HandlerThread:281817 [interfaces.py:finish():202] Joined disk monitor
+2024-01-19 12:59:26,884 INFO    HandlerThread:281817 [interfaces.py:finish():202] Joined gpu monitor
+2024-01-19 12:59:26,885 INFO    HandlerThread:281817 [interfaces.py:finish():202] Joined memory monitor
+2024-01-19 12:59:26,885 INFO    HandlerThread:281817 [interfaces.py:finish():202] Joined network monitor
+2024-01-19 12:59:27,485 INFO    SenderThread:281817 [sender.py:finish():1531] shutting down sender
+2024-01-19 12:59:27,800 INFO    MainThread:281817 [internal.py:handle_exit():76] Internal process exited
