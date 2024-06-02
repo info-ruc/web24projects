@@ -1,0 +1,5 @@
+sbert	kefu	E:/RUC/olml-2024-03-24/models/SentenceSimCH	SentenceSimCH	train.tsv
+opus-mt-zh-en	book_review	E:/RUC/olml-2024-03-24/models/TransCH2EN	TransCH2EN	train.tsv
+opus-mt-en-zh	imdb	E:/RUC/olml-2024-03-24/models/TransEN2CH	TransEN2CH	train.tsv
+imdb	imdb	E:/RUC/olml-2024-03-24/models/imdb_SentimentClsEN	SentimentClsEN	train.tsv
+image2text	img	E:/RUC/olml-2024-03-24/models/Image2Text	Image2Text	train.tsv
