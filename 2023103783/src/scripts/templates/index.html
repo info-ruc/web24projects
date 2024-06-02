@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            max-height: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .text-input {
+            width: 600px;
+            height: 400px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .submit-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            float: right;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+            
+        }
+
+        .margin-div {
+            margin: 50px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>判断输入文字的主题</h1>
+        <textarea id="textInput" class="text-input" rows="4" placeholder="输入文字..."></textarea>
+        <button id="submitButton" class="submit-button">提交</button>
+        <div class="container">
+            <div id = "loading" class = "margin-div">加载中...</div>
+            <div id = "display_world_probability" class = "margin-div">文字主题为全球事件的概率为：0.00</div>
+            <div id = "display_sports_probability" class = "margin-div">文字主题为运动赛事概率为：0.00</div>
+            <div id = "display_business_probability" class = "margin-div">文字主题为商业资讯的概率为：0.00</div>
+            <div id = "display_sci_tec_probability" class = "margin-div">文字主题为科学技术的概率为：0.00</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const world_probability = document.getElementById('display_world_probability')
+            const sports_probability = document.getElementById('display_sports_probability')
+            const business_probability = document.getElementById('display_business_probability')
+            const sci_tec_probability = document.getElementById('display_sci_tec_probability')
+            const loading = document.getElementById('loading')
+            var text = document.getElementById('textInput').value;
+            world_probability.style.display = 'none';
+            sports_probability.style.display = 'none';
+            business_probability.style.display = 'none';
+            sci_tec_probability.style.display = 'none';
+            loading.style.display = 'block';
+            fetch('/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                var probability = JSON.parse(data)
+
+                world_probability.textContent = probability.world;
+                sports_probability.textContent = probability.sports;
+                business_probability.textContent = probability.business;
+                sci_tec_probability.textContent = probability.sci_tec;
+                largest = probability.largest;
+
+                world_probability.style.display = 'block';
+                sports_probability.style.display = 'block';
+                business_probability.style.display = 'block';
+                sci_tec_probability.style.display = 'block';
+
+                world_probability.style.color = 'black';
+                sports_probability.style.color = 'black';
+                business_probability.style.color = 'black';
+                sci_tec_probability.style.color = 'black';
+
+                if (largest == 0){
+                    world_probability.style.color = 'red';
+                }
+                else if (largest == 1){
+                    sports_probability.style.color = 'red';
+                }
+                else if (largest == 2){
+                    business_probability.style.color = 'red';
+                }
+                else if (largest == 3){
+                    sci_tec_probability.style.color = 'red';
+                }
+
+                loading.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
